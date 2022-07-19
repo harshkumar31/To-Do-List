@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do App JS</title>
+    <!-- css -->
+    <link rel="stylesheet" href="style.css">
+    <!-- bootstrap links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- fontAweosum -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <!-- googleFonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Tangerine|Lato|Gamja+Flower|Open+Sans|Roboto+Slab|Indie+Flower|Lobster|Open+Sans|Kosugi+Maru">
+</head>
+<body onload="loadbody()">
+     <!-- date and time section -->
+     <div class="my-container">
+        <h3>Welcome, <span>User</span></h3>
+        <h5>Lots of work to do, lets make a list</h5>
+        <div class="date-time">
+            <span id="date">date</span>
+            <span id="month">month</span>
+            <span id="year">year</span>
+            <span id="weekday">weekday</span>
+        </div><br>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-plus"></i> SIGN UP
+        </button><br>
+        <a class="btn btn-secondary btn-sm" href="login.html">
+            <i class="fas fa-sign-in-alt"></i> LOGIN
+        </a>
+    </div><br>
+
+    <!-- todo-form -->
+    <div class="container">
+        <form autocomplete="off" class="form-group" id="form">
+            <input type="text" class="form-control" id="todos" disabled><br>
+            <button type="submit" class="btn btn-success btn-block" disabled>ADD</button>
+        </form><br>
+        <div class="error">You don't have access to this application, plz register your account or login</div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" class="form-group" id="signup-form">
+                        <label for="">Name</label>
+                        <input type="text" class="form-control" id="name" required><br>
+                        <label for="">Email</label>
+                        <input type="email" class="form-control" id="email" required><br>
+                        <label for="">Password</label>
+                        <input type="password" class="form-control" id="password" required minlength="6"><br>
+                        <button type="submit" class="btn btn-primary">REGISTER</button>
+                    </form>
+                </div>
+                <div class="container error" id="signupError"></div>
+                <div class="container error" id="signupError2"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--bootstrap scripts-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-firestore.js";
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+    
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+        apiKey: "AIzaSyDJi3cELf7kQFgZpR3gHcf-PtaRrxtYtKw",
+        authDomain: "to-do-js-8d6d4.firebaseapp.com",
+        projectId: "to-do-js-8d6d4",
+        storageBucket: "to-do-js-8d6d4.appspot.com",
+        messagingSenderId: "846608875080",
+        appId: "1:846608875080:web:7e5c5535e97e77c2d0e27d",
+        measurementId: "G-2GZ29P0QVX"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const userRef = collection(db,'users');
+        
+        const signupForm = document.getElementById("signup-form");
+        signupForm.addEventListener('submit', e=>
+        {
+            e.preventDefault();
+            const name = signupForm["name"].value;
+            const email = signupForm["email"].value;
+            const password = signupForm["password"].value;
+            // console.log(name,email,password);
+            signupForm.reset();
+            
+            createUserWithEmailAndPassword(auth, email, password).then(cred => {
+                return setDoc(doc(userRef,cred.user.uid),{
+                    Name: name,
+                    Email: email,
+                    Password: password
+                }).then(() => {
+                    console.log('success');
+                    location = "login.html";
+                }).catch(err => {
+                    console.log(err.message);
+                    const signupError = document.getElementById('signupError');
+                    signupError.innerText = err.message;
+                })
+            }).catch(err => {
+                console.log(err.message);
+                const signupError2 = document.getElementById('signupError2');
+                signupError2.innerText = err.message;
+            })
+
+
+        });
+    </script>
+    <script src = "app.js"></script>
+</body>
+</html>
